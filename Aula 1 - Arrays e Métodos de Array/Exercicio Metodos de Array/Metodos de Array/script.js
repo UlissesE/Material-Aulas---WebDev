@@ -141,7 +141,7 @@ function executarSome() {
 function executarEncadeamento() {
   const jogos = ['Zelda', 'Mario', 'Elden Ring', 'Fortnite', 'Minecraft'];
   const jogosFiltrados = jogos.filter((jogo) => jogo.includes("e"));
-  const resultado = 
+  const resultado = jogosFiltrados.map((jogo) => jogo.toLowerCase()).sort()
 
   document.getElementById("resultado-encadeamento").textContent = resultado.join(', ') || 'Nenhum jogo encontrado';
 }
