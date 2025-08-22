@@ -1,5 +1,5 @@
 // Dados de exemplo dos posts
-let posts = [
+let posts = JSON.parse(localStorage.getItem('posts')) || [
     {
         text: "Este é o primeiro post",
         category: "Notícias",
@@ -25,14 +25,30 @@ window.onload = function() {
     displayPosts();
 
     document.getElementById('postForm').addEventListener('submit', addPost); 
+    document.querySelector("#postList").addEventListener("click", handleClick)
+
+    localStorage.setItem("posts", JSON.stringify(posts))
 };
+
+function handleClick(event) {
+
+    const action = event.target.dataset.action;
+    const index = event.target.dataset.index;
+
+    if (action === "Editar") {
+        editarPost(index)
+    }
+    else if (action === "Apagar") {
+        apagarPost(index)
+    }
+}
 
 // Função para exibir os posts
 function displayPosts() {
     const postList = document.getElementById('postList');
     postList.innerHTML = '';
 
-    posts.forEach(pegaPost => {
+    posts.forEach((pegaPost,index) => {
             const postElement = document.createElement('div');
             postElement.classList.add('card-post');
   
@@ -41,8 +57,8 @@ function displayPosts() {
                 ${pegaPost.image ? `<img src="${pegaPost.image}" alt="Imagem do post" style="max-width:150px;">` : ""}
                 <p><em>Categoria: ${pegaPost.category}</em></p>
                 <p><em>Data e Hora: ${pegaPost.date}</em></p>
-                <button><i class="fa-solid fa-pen-to-square"></i> Editar</button>
-                <button><i class="fa-solid fa-eraser"></i> Apagar</button>
+                <button data-action="Editar" data-index="${index}"><i class="fa-solid fa-pen-to-square"></i> Editar</button>
+                <button data-action="Apagar" data-index="${index}"><i class="fa-solid fa-eraser"></i> Apagar</button>
                 <hr style="margin:30px;">`;
                
             postList.append(postElement);
@@ -70,4 +86,31 @@ function addPost(event) {
     document.getElementById('postForm').reset();
     
     displayPosts();
+}
+
+// UPDATE
+function editarPost(index) {
+    const novoTexto = prompt("Edite o conteúdo do post", posts[index].text)
+    posts[index].text = novoTexto
+    displayPosts()
+}
+
+ // DELETE
+function apagarPost(index) {
+    const confirmar = confirm("Você realmente deseja em excluir esse post?")
+    if (confirmar) {
+        posts.splice(index, 1);
+    }
+    displayPosts()
+}
+
+function salvarPost() {
+    localStorage.setItem('posts', JSON.stringify('posts'))
+}
+
+function guardaPost() {
+    const PostsGuardados = localStorage.getItem('posts')
+    if (PostsGuardados) {
+        posts = JSON.parse(PostsGuardados)
+    }
 }
