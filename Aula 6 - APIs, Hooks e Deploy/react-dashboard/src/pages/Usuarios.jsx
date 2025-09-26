@@ -1,31 +1,65 @@
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Usuarios() {
 
-  const [usuarios, setUsuarios] = useState([])
+  const [users, setUsers] = useState([])
+  const API_URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
+    fetch(`${API_URL}/users`)
+    .then(response => response.json())
+    .then(data => setUsers(data))
+  }, [])
 
 
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((response) => response.json())
-      .then((data) => setUsuarios(data))
-      .catch((error) => console.log(error))
-      .finally(console.log("Carregamento completo"));
-  }, []);
+  function handleClick() {
+    alert("Clicou")
+  }
 
   return (
-    <div className="p-6 flex-1 bg-gray-100">
-      <h1 className="text-2xl font-bold">Usuários</h1>
-      {usuarios.map(usuario => (
-        <div key={usuario.id}>
-        <br></br>
-        <p>{usuario.name}</p>
-        <p>{usuario.username}</p>
-        <p>{usuario.email}</p>
-        <p>{usuario.address.city}</p>
-        </div>
-      ))}
-    </div>
+    <>
+      <h1>Usuários</h1>
+      <Table>
+        <TableCaption>A list of your recent invoices.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">ID</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Method</TableHead>
+            <TableHead className="text-right">Ações</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell className="font-medium">{user.id}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
+              <TableCell className="text-right">
+                <Button onClick={handleClick}>Editar</Button>
+                <Button>Deletar</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell className="text-right">$2,500.00</TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </>
   );
 }
